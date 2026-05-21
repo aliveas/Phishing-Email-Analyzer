@@ -1,15 +1,3 @@
-"""
-analyzer.py  —  Phishing Email Analyzer
-========================================
-Main entry point. Orchestrates the full pipeline:
-  .eml file → parse → extract → intel APIs → risk score → HTML report
-
-Usage:
-  python analyzer.py samples/email.eml
-  python analyzer.py samples/email.eml --output report.html --verbose
-  python analyzer.py samples/email.eml --no-vt   (skip VirusTotal)
-"""
-
 import argparse
 import datetime
 import os
@@ -29,17 +17,15 @@ from whois_lookup import lookup_domain
 from risk_scorer import calculate_risk
 from generator import generate_report
 
-load_dotenv()        # reads VT_API_KEY from your .env file
-init(autoreset=True) # colourama — makes colours work on Windows too
+load_dotenv()        
+init(autoreset=True) 
 if hasattr(sys.stdout, "reconfigure"):
     sys.stdout.reconfigure(encoding="utf-8", errors="replace")
 if hasattr(sys.stderr, "reconfigure"):
     sys.stderr.reconfigure(encoding="utf-8", errors="replace")
 
 
-# ─────────────────────────────────────────────
-# Banner + helpers
-# ─────────────────────────────────────────────
+
 
 def print_banner():
     print(f"""
@@ -77,10 +63,6 @@ def finding(level: str, msg: str):
     print(f"  {c}[{level}]{Style.RESET_ALL}  {msg}")
 
 
-# ─────────────────────────────────────────────
-# Main pipeline
-# ─────────────────────────────────────────────
-
 def main():
     print_banner()
     args = parse_args()
@@ -94,7 +76,7 @@ def main():
     print(f"{Fore.CYAN}[*] File    : {args.eml_file}")
     print(f"[*] Started : {scan_time}")
 
-    # ── 1. Parse .eml ────────────────────────────────────────────────
+  
     section("Step 1/6  Parsing .eml file")
     email_data = read_eml(args.eml_file)
     if not email_data:
@@ -107,11 +89,11 @@ def main():
     finding("INFO", f"Date      : {email_data.get('date','N/A')}")
     finding("INFO", f"Reply-To  : {email_data.get('reply_to','None')}")
 
-    # ── 2. Header analysis ───────────────────────────────────────────
+  
     section("Step 2/6  Analyzing email headers")
     header_findings = analyze_headers(email_data)
     for f_ in header_findings:
-        # Template expects detail/raw_value fields.
+       
         f_.setdefault("detail", f_.get("description", ""))
         f_.setdefault("raw_value", "")
     for f_ in header_findings:
@@ -119,12 +101,12 @@ def main():
     if not header_findings:
         finding("OK", "No suspicious header indicators found")
 
-    # ── 3. URL extraction ────────────────────────────────────────────
+  
     section("Step 3/6  Extracting URLs from email body")
     urls = extract_urls(email_data)
     for u in urls:
         domain = (u.get("domain") or "").lower()
-        # Add compatibility fields used by scoring/template.
+      
         u.setdefault("is_ip_url", bool(re.match(r"^\d{1,3}(\.\d{1,3}){3}$", domain)))
         u.setdefault("suspicious_tld", domain.endswith((".ru", ".tk", ".xyz", ".top", ".click", ".gq", ".cn")))
         u.setdefault("is_form_action", False)
@@ -133,7 +115,7 @@ def main():
         for u in urls:
             print(f"         {Fore.CYAN}→ {u}")
 
-    # ── 4. Attachments ───────────────────────────────────────────────
+  
     section("Step 4/6  Scanning attachments")
     attachments = extract_attachments(email_data)
     medium_exts = {".pdf", ".zip", ".rar", ".7z", ".doc", ".docx", ".xls", ".xlsx"}
@@ -153,7 +135,7 @@ def main():
     else:
         finding("OK", "No attachments found")
 
-    # ── 5. VirusTotal ────────────────────────────────────────────────
+ 
     section("Step 5/6  VirusTotal threat intelligence")
     vt_url_results  = []
     vt_hash_results = []
@@ -203,7 +185,7 @@ def main():
                         if r.get("malicious", 0) > 0:
                             finding("HIGH", f"Malicious hash ({r['malicious']} engines): {r['hash'][:20]}...")
 
-    # ── 6. WHOIS ─────────────────────────────────────────────────────
+    
     section("Step 6/6  WHOIS domain reputation")
     whois_data    = {}
     sender_domain = email_data.get("sender_domain", "")
@@ -234,7 +216,7 @@ def main():
     else:
         finding("INFO", "Could not extract sender domain")
 
-    # ── Risk score + report ──────────────────────────────────────────
+  
     risk    = calculate_risk(
         header_findings=header_findings,
         urls=urls,
