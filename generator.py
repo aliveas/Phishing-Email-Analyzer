@@ -1,8 +1,3 @@
-"""
-report/generator.py
-====================
-Renders the HTML phishing analysis report using a Jinja2 template.
-"""
 
 import os
 from jinja2 import Environment, FileSystemLoader
@@ -22,14 +17,12 @@ def generate_report(
     risk            : dict,
     output_path     : str,
 ) -> None:
-    """
-    Renders and saves the HTML report.
-    """
+
     template_dir = os.path.dirname(__file__)
     env          = Environment(loader=FileSystemLoader(template_dir), autoescape=True)
     template     = env.get_template("template.html")
 
-    # Build a VT lookup dict for quick access by URL in template
+ 
     vt_by_url = {r["query"]: r for r in vt_url_results}
 
     html = template.render(
